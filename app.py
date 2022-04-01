@@ -168,5 +168,5 @@ if __name__ == '__main__':
     #should have a thread running behind to get transactions from other nodes and be updated all the time....
     #socketio.run(app)
     
-    app.run(host='localhost', debug=False, port=5000)
+    app.run(host='0.0.0.0', debug=False, port=5000)
 

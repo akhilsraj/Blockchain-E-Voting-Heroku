@@ -3,142 +3,85 @@ import sqlite3
 from chain import Chain
 import random
 import rsa
-from flask_socketio import SocketIO, send ,emit
-import cv2
-import pickle
 import os
 from flask import send_file
-import face_recognition
 port = int(os.environ.get('PORT', 5000))
 
 app = Flask(__name__)
 bob_pub , bob_priv = rsa.newkeys(512)
-socketio = SocketIO(app, cors_allowed_origins='*')
 Data_rec = [[]]
 z = 0
-
-
-# with open('keys/pubkey.pem', mode='wb') as f:
-#     f.write(bob_pub.save_pkcs1('PEM'))
-# with open('keys/privkey.pem', mode='wb') as f:
-#     f.write(bob_priv.save_pkcs1('PEM'))
-# def load_keys(message):
-#     with open('keys/privkey.pem','rb') as f:
-#         priv_key = rsa.PrivateKey.load_pkcs1(f.read)
-#     print("Decrypted value is ",rsa.decrypt(message,priv_key))
 chain = Chain(20,bob_pub , bob_priv)
 voter_id_global = None
 app.secret_key = 'dljsaklqk24e21cjn!Ew@@dsa5'
 
-def face_recog(name_from_func):
-    cascPathface = os.path.dirname(cv2.__file__) + "/data/haarcascade_frontalface_alt2.xml"
-    # load the harcaascade in the cascade classifier
-    faceCascade = cv2.CascadeClassifier(cascPathface)
-    # load the known faces and embeddings saved in last file
-    data = pickle.loads(open('face_enc', "rb").read())
+# def face_recog(name_from_func):
+#     cascPathface = os.path.dirname(cv2.__file__) + "/data/haarcascade_frontalface_alt2.xml"
+#     # load the harcaascade in the cascade classifier
+#     faceCascade = cv2.CascadeClassifier(cascPathface)
+#     # load the known faces and embeddings saved in last file
+#     data = pickle.loads(open('face_enc', "rb").read())
     
-    print("Streaming started , please continue with your option and input it down below")
-    video_capture = cv2.VideoCapture(0)
-    # loop over frames from the video file stream
-    while True:
-        # grab the frame from the threaded video stream
-        ret, frame = video_capture.read()
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = faceCascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(60, 60),flags=cv2.CASCADE_SCALE_IMAGE)
+#     print("Streaming started , please continue with your option and input it down below")
+#     video_capture = cv2.VideoCapture(0)
+#     # loop over frames from the video file stream
+#     while True:
+#         # grab the frame from the threaded video stream
+#         ret, frame = video_capture.read()
+#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#         faces = faceCascade.detectMultiScale(gray,scaleFactor=1.1,minNeighbors=5,minSize=(60, 60),flags=cv2.CASCADE_SCALE_IMAGE)
     
-        # convert the input frame from BGR to RGB 
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        # the facial embeddings for face in input
-        encodings = face_recognition.face_encodings(rgb)
-        names = []
-        # loop over the facial embeddings incase
-        # we have multiple embeddings for multiple fcaes
-        for encoding in encodings:
-        #Compare encodings with encodings in data["encodings"]
-        #Matches contain array with boolean values and True for the embeddings it matches closely
-        #and False for rest
-            matches = face_recognition.compare_faces(data["encodings"],encoding)
-            #set name =inknown if no encoding matches
-            name = "Unknown"
-            # check to see if we have found a match
-            if True in matches:
-                #Find positions at which we get True and store them
-                matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-                counts = {}
-                # loop over the matched indexes and maintain a count for
-                # each recognized face face
-                for i in matchedIdxs:
-                    #Check the names at respective indexes we stored in matchedIdxs
-                    name = data["names"][i]
-                    #increase count for the name we got
-                    counts[name] = counts.get(name, 0) + 1
-                #set name which has highest count
-                name = max(counts, key=counts.get)
+#         # convert the input frame from BGR to RGB 
+#         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#         # the facial embeddings for face in input
+#         encodings = face_recognition.face_encodings(rgb)
+#         names = []
+#         # loop over the facial embeddings incase
+#         # we have multiple embeddings for multiple fcaes
+#         for encoding in encodings:
+#         #Compare encodings with encodings in data["encodings"]
+#         #Matches contain array with boolean values and True for the embeddings it matches closely
+#         #and False for rest
+#             matches = face_recognition.compare_faces(data["encodings"],encoding)
+#             #set name =inknown if no encoding matches
+#             name = "Unknown"
+#             # check to see if we have found a match
+#             if True in matches:
+#                 #Find positions at which we get True and store them
+#                 matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+#                 counts = {}
+#                 # loop over the matched indexes and maintain a count for
+#                 # each recognized face face
+#                 for i in matchedIdxs:
+#                     #Check the names at respective indexes we stored in matchedIdxs
+#                     name = data["names"][i]
+#                     #increase count for the name we got
+#                     counts[name] = counts.get(name, 0) + 1
+#                 #set name which has highest count
+#                 name = max(counts, key=counts.get)
     
     
-            # update the list of names
-            names.append(name)
-            # loop over the recognized faces
-            if names[0] == name_from_func and len(names) == 1:
-                #print("Only one person found",names)
-                for ((x, y, w, h), name) in zip(faces, names):
-                    # rescale the face coordinates
-                    # draw the predicted face name on the image
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.75, (0, 255, 0), 2)
-            else:
-                print("Authentication Failed or Multiple People found Please Try again")
-                video_capture.release()
-                cv2.destroyAllWindows()
-                break
-        cv2.imshow("Frame", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+#             # update the list of names
+#             names.append(name)
+#             # loop over the recognized faces
+#             if names[0] == name_from_func and len(names) == 1:
+#                 #print("Only one person found",names)
+#                 for ((x, y, w, h), name) in zip(faces, names):
+#                     # rescale the face coordinates
+#                     # draw the predicted face name on the image
+#                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+#                     cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX,
+#                     0.75, (0, 255, 0), 2)
+#             else:
+#                 print("Authentication Failed or Multiple People found Please Try again")
+#                 video_capture.release()
+#                 cv2.destroyAllWindows()
+#                 break
+#         cv2.imshow("Frame", frame)
+#         if cv2.waitKey(1) & 0xFF == ord('q'):
+#             break
 
 
-@socketio.on('join_room_2')
-def handleMessage(msg):
-	print("I am here",msg)
-	send(msg, broadcast=True)
-
-
-@socketio.on('send_msg_to_DB')
-def send_msg_to_DB(msg):
-    print("PAGE 2 was called",msg)
-    for j in chain.blocks:
-        print(j.data)
-        print(j.previous_hash.hexdigest())
-        print(j.hash.hexdigest())
-        emit('receive_for_db',str(j.previous_hash.hexdigest()).encode('utf8'),broadcast = True)
-        emit('receive_for_db'," ".encode('utf8'),broadcast = True)
-        emit('receive_for_db',str(j.hash.hexdigest()).encode('utf8'),broadcast = True)
-        emit('receive_for_db'," ".encode('utf8'),broadcast = True)
-        emit('receive_for_db',str(j.data).encode('utf8'),broadcast = True)
-        emit('receive_for_db'," ".encode('utf8'),broadcast = True)
-        emit('receive_for_db',"NO".encode('utf8'),broadcast = True)
-        emit('receive_for_db'," ".encode('utf8'),broadcast = True)
-    emit('receive_for_db',"END".encode('utf8'),broadcast = True)
-
-@socketio.on('receive_for_db')
-def receive_for_db(msg):
-    print("I am in receiving place")
-    while True:
-        data = msg
-        print(data)
-        if not data:
-            break
-        if data == "END".encode('utf8'):
-            break
-        rec = data.split()
-
-       
-        for i in rec:
-            if i != b'NO':
-                Data_rec[z].append(i)
-            else:
-                z = z + 1
-                Data_rec.append([])
 @app.route('/')
 def home():
     con = sqlite3.connect("mini_pro.db")
@@ -225,5 +168,5 @@ if __name__ == '__main__':
     #should have a thread running behind to get transactions from other nodes and be updated all the time....
     #socketio.run(app)
     
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=False, port=5000)
 

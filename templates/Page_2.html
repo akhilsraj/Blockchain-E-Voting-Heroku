@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page_2</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <style>
+      body{
+        background-color: bisque;
+      }
+
+      #videoElement {
+            width: 300px;
+            height: 175px;
+            background-color: #666;
+        }
+
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+      th
+      {
+	border: 1px solid black;
+	padding: 8px;
+  height:25px;
+  width:200px;
+}
+  td {
+	border: 1px solid black;
+	padding: 8px;
+  height:100px;
+  width:200px;
+  overflow: hidden;
+  white-space: nowrap;
+  table-layout:fixed
+}
+/* thead th {
+  width: 500%;
+} */
+table { width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+ }
+ button{
+   font-size:large;
+   font-family: Georgia;
+   color: blueviolet;
+ }
+ em {  /* or .call em, but you should aim for consistency in your styling */
+    font-style: normal;
+    font-size: 130%;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+second {  /* or .call em, but you should aim for consistency in your styling */
+    font-style: normal;
+    font-size: 130%;
+    text-transform:unset;
+    font-weight: bold;
+    color:red;}
+    </style>
+</head>
+<body>
+    <h1><center>Welcome To Elections 2022</center></h1>
+    <h2>Congartulations!!!Your Voter ID is Authenticated</h2>
+    <p class="call"><em>Look into the camera.You are under continuous surveillance now.</em></p>
+    <p class="call1"><second>Please be in a well lit place.
+    Please maintain privacy while you vote.<br></second>
+    
+    <!-- <div id="container">
+      <video autoplay="true" id="videoElement">
+      
+      </video>
+  </div> -->
+    
+  <!-- <script>
+
+    var video = document.querySelector("#videoElement");
+
+    if (navigator.mediaDevices.getUserMedia) {navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+        video.srcObject = stream;
+        })
+        .catch(function (err0r) {
+        console.log("Something went wrong!");
+        });
+    }
+
+    </script> -->
+
+
+    <script type = "text/javascript">
+        $(document).ready(function(){
+          var socket = io.connect('http://localhost:5000/page_2');
+          socket.on('connect', function() {
+          console.log('Connection Established for the second page');
+          });
+          /*$('#Submit').on('click', function() {
+            socket.emit('send_msg_to_DB',{
+              msg : $('#Candidates').val()
+            })
+            console.log($('#Candidates').val());
+          });*/
+        })
+        
+      </script>
+    <form method ="post" action = "http://localhost:5000/validate">
+     <table>
+       <tr>
+         <th>Candidate Name</th>
+         <th>Candidate Photo</th>
+         <th>Choose your Candidate</th>
+       </tr>
+        <tr>
+        {% for item in cadidates_list %}
+          
+         <td><label for="Candidate">{{item}}</label><br></td>
+          <td><img src="{{url_for('static', filename= item + '.png' )}}" width="100" height="100"/></td>
+          <td><input type="radio" id= {{item}} name="Candidate" value={{item}}></td>
+        {% endfor %}
+        </tr>
+        </table>
+        </select>
+        <br>
+        <br>
+       <center> <button id = "Submit">Submit</button></center>
+      </form>
+      
+</body>
+</html>

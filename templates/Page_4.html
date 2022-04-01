@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <title>Page_4</title>
+</head>
+<body>
+    <script type = "text/javascript">
+        $(document).ready(function(){
+          var socket = io.connect('http://localhost:5000/page_2');
+          socket.on('connect', function() {
+          console.log('Connection Established for the Thank You page');
+          });
+        })
+        
+      </script>
+    <center><h1>You have successfully voted</h1>
+             <h1>Thank You</h1></center>
+             <form method = "post" action = "http://localhost:5000/download">
+              <button id="Download">Download Keys</button>
+             </form>
+    
+</body>
+</html>

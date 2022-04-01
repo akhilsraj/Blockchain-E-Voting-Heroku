@@ -1,0 +1,21 @@
+import sqlite3
+
+conn = sqlite3.connect('mini_pro.db')
+c = conn.cursor()
+#c.execute('''Drop TABLE candidates_list''')
+# c.execute('''CREATE TABLE voter_info(serial_no INT NOT NULL,voter_id INT NOT NULL,pincode INT NOT NULL,voter_name CHAR NOT NULL ,vote_status INT DEFAULT 0)''')
+# c.execute("INSERT INTO voter_info VALUES(1,518332,560062,'Akhil',0)")
+# c.execute("INSERT INTO voter_info VALUES(2,6014468,560062,'Rashmi',0)")
+# c.execute("INSERT INTO voter_info VALUES(3,4595175,560063,'Mark',0)")
+# c.execute("INSERT INTO voter_info VALUES(4,5459175,560062,'Nikita',0)")
+#c.execute("DROP TABLE voter_info;")
+conn.commit()
+c.execute("UPDATE voter_info SET vote_status = 0")
+conn.commit()
+c.execute("SELECT * FROM voter_info")
+print(c.fetchall())
+c.execute("DELETE FROM remote_ledger_copy")
+conn.commit()
+print(c.fetchall())
+
+conn.close()

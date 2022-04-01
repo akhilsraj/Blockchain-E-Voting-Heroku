@@ -1,0 +1,13 @@
+table, th, td {
+border: 10px solid black;
+}
+
+body {
+background-color: powderblue;
+}
+label {
+color: blue;
+}
+p {
+color: red;
+}

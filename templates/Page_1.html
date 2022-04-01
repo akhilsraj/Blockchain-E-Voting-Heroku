@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    table, th, td {
+      border: 1px solid black;
+    }
+    body {
+        font-family: verdana;
+       }
+/*section {
+        color: black;
+        border-radius: 1em;
+        padding: 1em;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-5%, -50%)
+        }*/
+  .First
+  {
+    font-size:250%;
+    position: relative;
+    font-weight: bolder;
+        }
+  em {  /* or .call em, but you should aim for consistency in your styling */
+    font-style: normal;
+    font-size: 100%;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+section{
+  font-size:100%;
+  font-family: Verdana;
+}
+form {
+    width: 300px;
+    margin: 0 auto;
+}
+t table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 50%;
+        table-layout: fixed;
+      }
+      
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      
+th
+      {
+	border: 1px solid black;
+	padding: 8px;
+  height:25px;
+  width:100px;
+  max-width:100px;
+}
+  td {
+	border: 1px solid black;
+        height: 30px;
+        width: 30px;
+        text-align:left;
+        max-width:100px;
+        background-color: white;
+        word-wrap:break-word;
+    
+    }
+ button{
+  font-size:large
+ }
+
+    </style>
+</head>
+<body>
+  <body style="background-color:beige;">
+    <div class="First">
+      <center>"Welcome to Elections 2022"</center>
+    </div>
+    <P><center>Voting is your right.Cast your vote with utmost honesty.</center></P>
+  
+    <p class="call"><em>Read the given instuctions carefully before clicking on the link given.</em></p>
+    <section>
+    <ul>
+      1.Enter your 10 digit voter ID Number in the dialog box and click on login.<br>
+      2.You will be prompted to fingerprint Authentication.Place your thumb on the fngerprint scanner<br>
+      3.After finger print authentication,Face recognition is initaiated and you are under continuous surveillance now<br>
+      4.Select your Candidate of choice from the menu and click on Submit<br>
+    </ul></section>
+  <script type = "text/javascript">
+    $(document).ready(function(){
+      var socket = io.connect('http://localhost:5000');
+      socket.on('connect', function() {
+      console.log('Connection Established');
+      });
+      $('#Login').on('click', function() {
+        socket.emit('join_room_2',{
+          msg : $('#myMessage').val()
+        })
+        console.log($('#myMessage').val());
+      });
+    })
+    
+  </script>
+  <form method = "post" action = "http://localhost:5000/page_2">
+    <br>
+    <center><label>Voter ID</label></center></center>
+    <center><input type="text" id="myMessage" name = "u"></center>
+    <center><button id="Login">Login</button></center>
+  </form>
+  <p class="call"><em>Public ledger</em></p>
+  <table style="width:100%">
+    <tr>
+      <th>Previous_hash </th>
+      <th>Current_Hash </th>
+      <th>Miner_PB </th>
+      <th>Encrypted Message</th>
+    </tr>
+    <tr>
+      {% for item in public_ledger %}
+        <tr>
+          {% for i in item %}
+            <td>{{i}}</td>
+          {%endfor%}
+        </tr>
+      {% endfor %}
+    </tr>
+
+  </table>
+
+</body>
+</html>
